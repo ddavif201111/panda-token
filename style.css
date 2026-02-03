@@ -1,11 +1,22 @@
 body { 
     background: #000; color: #f3ba2f; margin: 0; 
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    height: 100vh; overflow: hidden; touch-action: none;
+    height: 100vh; overflow: hidden; touch-action: none; font-family: sans-serif;
 }
 #balance { font-size: 60px; font-weight: 900; margin-bottom: 20px; }
 #coin { 
-    width: 200px; height: 200px; border-radius: 50%; border: 5px solid #f3ba2f;
-    display: flex; align-items: center; justify-content: center; font-size: 80px;
-    touch-action: none; user-select: none;
+    width: 220px; height: 220px; border-radius: 50%; border: 6px solid #f3ba2f;
+    display: flex; align-items: center; justify-content: center; font-size: 100px;
+    background: radial-gradient(circle, #333, #000);
+    transition: transform 0.05s; user-select: none;
 }
+.stats { width: 80%; margin-top: 30px; text-align: center; }
+.energy-text { margin-bottom: 8px; font-weight: bold; }
+.bar { width: 100%; height: 12px; background: #222; border-radius: 10px; overflow: hidden; }
+#fill { height: 100%; width: 100%; background: #f3ba2f; transition: width 0.2s; }
+.shop-btn { 
+    margin-top: 30px; padding: 15px 30px; background: #f3ba2f; color: #000; 
+    border: none; border-radius: 12px; font-weight: bold; font-size: 18px; cursor: pointer;
+}
+.pop { position: absolute; color: #fff; font-size: 30px; font-weight: 900; pointer-events: none; animation: fly 0.6s forwards; }
+@keyframes fly { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-100px); } }
