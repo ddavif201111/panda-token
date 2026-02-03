@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -7,17 +7,47 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <div id="balance">0</div>
-    
-    <div id="coin">🐼</div>
+    <div id="app">
+        <div class="header">
+            <h1 id="balance">0</h1>
+            <div class="income-info">
+                タップ: <span id="tap-val">1</span> | AFK: +<span id="afk-val">0</span>/с
+            </div>
+        </div>
 
-    <div class="stats">
-        <div class="energy-text">⚡ Енергія: <span id="energy-val">1000</span></div>
-        <div class="bar"><div id="fill"></div></div>
+        <div id="coin">🐼</div>
+
+        <div class="stats">
+            <div class="energy-info">⚡ <span id="energy-val">1000</span> / 1000</div>
+            <div class="bar"><div id="fill"></div></div>
+        </div>
+
+        <div class="menu">
+            <button class="menu-btn active" onclick="showTab('game')">🎮 Гра</button>
+            <button class="menu-btn" onclick="showTab('shop')">🚀 Магазин</button>
+            <button class="menu-btn" onclick="showTab('refs')">👥 Друзі</button>
+        </div>
+
+        <div id="shop" class="tab-content">
+            <h2>Магазин (Ціна x1.5)</h2>
+            <div class="upgrade-card">
+                <div><b>Multi-Tap (+1)</b><br><small>Ціна: <span id="tap-cost">100</span></small></div>
+                <button onclick="buyUpgrade('tap')">Купити</button>
+            </div>
+            <div class="upgrade-card" style="margin-top:10px;">
+                <div><b>AFK Ферма (+1/с)</b><br><small>Ціна: <span id="afk-cost">500</span></small></div>
+                <button onclick="buyUpgrade('afk')">Купити</button>
+            </div>
+        </div>
+
+        <div id="refs" class="tab-content">
+            <h2>Друзі</h2>
+            <div class="ref-link-box">
+                <input type="text" id="ref-link" value="https://t.me/share/url?url=https://t.me/your_bot" readonly>
+                <button onclick="copyRef()">Поділитись</button>
+            </div>
+        </div>
     </div>
-
-    <button class="shop-btn" onclick="buyUpgrade()">🚀 Купити Multi-Tap</button>
-
     <script src="script.js"></script>
 </body>
 </html>
