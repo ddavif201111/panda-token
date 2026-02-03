@@ -1,0 +1,11 @@
+body { 
+    background: #000; color: #f3ba2f; margin: 0; 
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 100vh; overflow: hidden; touch-action: none;
+}
+#balance { font-size: 60px; font-weight: 900; margin-bottom: 20px; }
+#coin { 
+    width: 200px; height: 200px; border-radius: 50%; border: 5px solid #f3ba2f;
+    display: flex; align-items: center; justify-content: center; font-size: 80px;
+    touch-action: none; user-select: none;
+}

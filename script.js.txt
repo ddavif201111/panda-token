@@ -1,0 +1,17 @@
+const tg = window.Telegram.WebApp;
+tg.expand();
+if(tg.disableVerticalSwipes) tg.disableVerticalSwipes();
+
+let coins = 0;
+const coin = document.getElementById('coin');
+const balance = document.getElementById('balance');
+
+function handle(e) {
+    e.preventDefault(); // ЦЕ ВІДКЛЮЧАЄ СКРОЛ ТЕЛЕГРАМА
+    coins++;
+    balance.innerText = coins;
+    if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+}
+
+coin.addEventListener('touchstart', handle, {passive: false});
+coin.addEventListener('mousedown', handle);
