@@ -2,14 +2,22 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <link rel="stylesheet" href="style.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
     <div id="balance">0</div>
+    
     <div id="coin">🐼</div>
+
+    <div class="stats">
+        <div class="energy-text">⚡ Енергія: <span id="energy-val">1000</span></div>
+        <div class="bar"><div id="fill"></div></div>
+    </div>
+
+    <button class="shop-btn" onclick="buyUpgrade()">🚀 Купити Multi-Tap</button>
+
     <script src="script.js"></script>
 </body>
 </html>
-
