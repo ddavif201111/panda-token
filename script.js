@@ -2,10 +2,10 @@ const tg = window.Telegram.WebApp;
 tg.expand();
 if(tg.disableVerticalSwipes) tg.disableVerticalSwipes();
 
-// Завантаження даних
+// Дані
 let coins = Number(localStorage.getItem('coins')) || 0;
-let power = Number(localStorage.getItem('power')) || 1;
-let afkIncome = Number(localStorage.getItem('afk')) || 0;
+let power = Number(localStorage.getItem('power')) || 1; // Це рівень тапа
+let afkLevel = Number(localStorage.getItem('afkLevel')) || 0;
 let tapCost = Number(localStorage.getItem('tapCost')) || 100;
 let afkCost = Number(localStorage.getItem('afkCost')) || 500;
 let energy = 1000;
@@ -13,61 +13,54 @@ const maxEnergy = 1000;
 
 function updateUI() {
     document.getElementById('balance').innerText = Math.floor(coins).toLocaleString();
-    document.getElementById('tap-val').innerText = power;
-    document.getElementById('afk-val').innerText = afkIncome;
+    document.getElementById('afk-val').innerText = afkLevel;
     document.getElementById('energy-val').innerText = Math.floor(energy);
     document.getElementById('fill').style.width = (energy / maxEnergy * 100) + '%';
-    document.getElementById('tap-cost').innerText = Math.floor(tapCost);
-    document.getElementById('afk-cost').innerText = Math.floor(afkCost);
+    
+    // Оновлення тексту в магазині
+    document.getElementById('tap-level-name').innerText = Multi-Tap (Рівень ${power});
+    document.getElementById('tap-cost').innerText = Math.floor(tapCost).toLocaleString();
+    document.getElementById('afk-level-name').innerText = AFK Ферма (Рівень ${afkLevel});
+    document.getElementById('afk-cost').innerText = Math.floor(afkCost).toLocaleString();
     
     // Збереження
     localStorage.setItem('coins', coins);
     localStorage.setItem('power', power);
-    localStorage.setItem('afk', afkIncome);
+    localStorage.setItem('afkLevel', afkLevel);
     localStorage.setItem('tapCost', tapCost);
     localStorage.setItem('afkCost', afkCost);
 }
 
-// Клік
 function handleTap(e) {
     if (energy >= power) {
         if (e.cancelable) e.preventDefault();
         coins += power;
         energy -= power;
         
-        // Анімація кліку та вібрація
         const coin = document.getElementById('coin');
-        coin.style.transform = 'scale(0.95)';
+        coin.style.transform = 'scale(0.92)';
         setTimeout(() => coin.style.transform = 'scale(1)', 50);
+        
         if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-
         updateUI();
     }
 }
 
-// Магазин з ціною x1.5
 function buyUpgrade(type) {
     if (type === 'tap' && coins >= tapCost) {
         coins -= tapCost;
-        power += 1;
-        tapCost *= 1.5; // Ціна росте в 1.5 рази
+        power += 1; // Наступний рівень
+        tapCost *= 1.5; // Ціна х1.5
     } else if (type === 'afk' && coins >= afkCost) {
         coins -= afkCost;
-        afkIncome += 1;
-        afkCost *= 1.5; // Ціна росте в 1.5 рази
+        afkLevel += 1;
+        afkCost *= 1.5; // Ціна х1.5
     } else {
-        tg.showAlert('Бракує монет!');
+        tg.showAlert('Тобі треба більше золота! 💰');
         return;
     }
     updateUI();
 }
-
-// AFK Дохід та регенерація енергії (щосекунди)
-setInterval(() => {
-    coins += afkIncome; // Нараховуємо пасивний дохід
-    if (energy < maxEnergy) energy += 1.5; // Реген енергії
-    updateUI();
-}, 1000);
 
 function showTab(name) {
     document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
@@ -75,6 +68,24 @@ function showTab(name) {
     if (name !== 'game') document.getElementById(name).style.display = 'block';
     event.currentTarget.classList.add('active');
 }
+
+function copyRef() {
+    const link = document.getElementById('ref-link');
+    link.select();
+    document.execCommand('copy');
+    tg.showAlert('Скопійовано! Відправ другу 📲');
+}
+
+function shareGame() {
+    const url = https://t.me/share/url?url=https://t.me/your_bot?start=user${tg.initDataUnsafe.user?.id || '123'}&text=Грай зі мною в Panda Coin! 🐼;
+    tg.openTelegramLink(url);
+}
+
+setInterval(() => {
+    coins += afkLevel; 
+    if (energy < maxEnergy) energy += 1.5;
+    updateUI();
+}, 1000);
 
 document.getElementById('coin').addEventListener('touchstart', handleTap, {passive: false});
 updateUI();
