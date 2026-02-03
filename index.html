@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -7,16 +7,46 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <div id="balance">0</div>
-    
-    <div id="coin">🐼</div>
+    <div id="app">
+        <div class="header">
+            <h1 id="balance">0</h1>
+            <div class="per-tap">Прибуток за тап: <span id="tap-val">1</span></div>
+        </div>
 
-    <div class="stats">
-        <div class="energy-text">⚡ Енергія: <span id="energy-val">1000</span></div>
-        <div class="bar"><div id="fill"></div></div>
+        <div id="coin">🐼</div>
+
+        <div class="stats">
+            <div class="energy-info">⚡ <span id="energy-val">1000</span> / 1000</div>
+            <div class="bar"><div id="fill"></div></div>
+        </div>
+
+        <div class="menu">
+            <button class="menu-btn active" onclick="showTab('game')">🎮 Гра</button>
+            <button class="menu-btn" onclick="showTab('shop')">🚀 Магазин</button>
+            <button class="menu-btn" onclick="showTab('refs')">👥 Друзі</button>
+        </div>
+
+        <div id="shop" class="tab-content">
+            <h2>Магазин</h2>
+            <div class="upgrade-card">
+                <div>
+                    <b>Multi-Tap</b><br>
+                    <small>Ціна: <span id="upgrade-cost">100</span></small>
+                </div>
+                <button onclick="buyUpgrade()">Купити</button>
+            </div>
+        </div>
+
+        <div id="refs" class="tab-content">
+            <h2>Ваші друзі</h2>
+            <p>Запрошуйте друзів та отримуйте бонуси!</p>
+            <div class="ref-link-box">
+                <input type="text" id="ref-link" value="https://t.me/your_bot?start=123" readonly>
+                <button onclick="copyRef()">Копіювати</button>
+            </div>
+            <div class="ref-list">Запрошено: <span id="ref-count">0</span></div>
+        </div>
     </div>
-
-    <button class="shop-btn" onclick="buyUpgrade()">🚀 Купити Multi-Tap</button>
 
     <script src="script.js"></script>
 </body>
