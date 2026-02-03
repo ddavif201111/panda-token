@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -7,67 +7,17 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <div id="app">
-        <div class="header">
-            <h1 id="balance">0</h1>
-            <div class="income-info">Прибуток: +<span id="afk-val">0</span>/с</div>
-        </div>
+    <div id="balance">0</div>
+    
+    <div id="coin">🐼</div>
 
-        <div id="coin">🐼</div>
-
-        <div class="stats">
-            <div class="energy-info">⚡ <span id="energy-val">1000</span> / 1000</div>
-            <div class="bar"><div id="fill"></div></div>
-        </div>
-
-        <div class="menu">
-            <button class="menu-btn active" onclick="showTab('game')">🎮 Гра</button>
-            <button class="menu-btn" onclick="showTab('shop')">🚀 Магазин</button>
-            <button class="menu-btn" onclick="showTab('refs')">👥 Друзі</button>
-        </div>
-
-        <div id="shop" class="tab-content">
-            <h2>Магазин</h2>
-            <div class="upgrade-card">
-                <div>
-                    <b id="tap-level-name">Multi-Tap (Рівень 1)</b><br>
-                    <small>Ціна: <span id="tap-cost">100</span></small>
-                </div>
-                <button onclick="buyUpgrade('tap')">Lvl Up</button>
-            </div>
-            <div class="upgrade-card" style="margin-top:15px;">
-                <div>
-                    <b id="afk-level-name">AFK Ферма (Рівень 0)</b><br>
-                    <small>Ціна: <span id="afk-cost">500</span></small>
-                </div>
-                <button onclick="buyUpgrade('afk')">Lvl Up</button>
-            </div>
-        </div>
-
-        <div id="refs" class="tab-content">
-            <div class="refs-container">
-                <h2>Запроси друзів!</h2>
-                <p>Отримуй бонуси за кожного запрошеного гравця</p>
-                
-                <div class="ref-stats">
-                    <div class="ref-stat-card">
-                        <span>Друзів</span>
-                        <b id="ref-count">0</b>
-                    </div>
-                </div>
-
-                <div class="ref-link-section">
-                    <input type="text" id="ref-link" value="https://t.me/your_bot?start=user123" readonly>
-                    <button class="copy-btn" onclick="copyRef()">Копіювати</button>
-                </div>
-
-                <button class="share-btn" onclick="shareGame()">Запросити друга 🚀</button>
-
-                <div class="ref-list-header">Список друзів:</div>
-                <div class="ref-list-empty">У вас поки немає друзів</div>
-            </div>
-        </div>
+    <div class="stats">
+        <div class="energy-text">⚡ Енергія: <span id="energy-val">1000</span></div>
+        <div class="bar"><div id="fill"></div></div>
     </div>
+
+    <button class="shop-btn" onclick="buyUpgrade()">🚀 Купити Multi-Tap</button>
+
     <script src="script.js"></script>
 </body>
 </html>
