@@ -10,9 +10,7 @@
     <div id="app">
         <div class="header">
             <h1 id="balance">0</h1>
-            <div class="income-info">
-                タップ: <span id="tap-val">1</span> | AFK: +<span id="afk-val">0</span>/с
-            </div>
+            <div class="income-info">Прибуток: +<span id="afk-val">0</span>/с</div>
         </div>
 
         <div id="coin">🐼</div>
@@ -29,22 +27,44 @@
         </div>
 
         <div id="shop" class="tab-content">
-            <h2>Магазин (Ціна x1.5)</h2>
+            <h2>Магазин</h2>
             <div class="upgrade-card">
-                <div><b>Multi-Tap (+1)</b><br><small>Ціна: <span id="tap-cost">100</span></small></div>
-                <button onclick="buyUpgrade('tap')">Купити</button>
+                <div>
+                    <b id="tap-level-name">Multi-Tap (Рівень 1)</b><br>
+                    <small>Ціна: <span id="tap-cost">100</span></small>
+                </div>
+                <button onclick="buyUpgrade('tap')">Lvl Up</button>
             </div>
-            <div class="upgrade-card" style="margin-top:10px;">
-                <div><b>AFK Ферма (+1/с)</b><br><small>Ціна: <span id="afk-cost">500</span></small></div>
-                <button onclick="buyUpgrade('afk')">Купити</button>
+            <div class="upgrade-card" style="margin-top:15px;">
+                <div>
+                    <b id="afk-level-name">AFK Ферма (Рівень 0)</b><br>
+                    <small>Ціна: <span id="afk-cost">500</span></small>
+                </div>
+                <button onclick="buyUpgrade('afk')">Lvl Up</button>
             </div>
         </div>
 
         <div id="refs" class="tab-content">
-            <h2>Друзі</h2>
-            <div class="ref-link-box">
-                <input type="text" id="ref-link" value="https://t.me/share/url?url=https://t.me/your_bot" readonly>
-                <button onclick="copyRef()">Поділитись</button>
+            <div class="refs-container">
+                <h2>Запроси друзів!</h2>
+                <p>Отримуй бонуси за кожного запрошеного гравця</p>
+                
+                <div class="ref-stats">
+                    <div class="ref-stat-card">
+                        <span>Друзів</span>
+                        <b id="ref-count">0</b>
+                    </div>
+                </div>
+
+                <div class="ref-link-section">
+                    <input type="text" id="ref-link" value="https://t.me/your_bot?start=user123" readonly>
+                    <button class="copy-btn" onclick="copyRef()">Копіювати</button>
+                </div>
+
+                <button class="share-btn" onclick="shareGame()">Запросити друга 🚀</button>
+
+                <div class="ref-list-header">Список друзів:</div>
+                <div class="ref-list-empty">У вас поки немає друзів</div>
             </div>
         </div>
     </div>
