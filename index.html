@@ -6,6 +6,8 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body { background: #000; color: #f3ba2f; margin: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; width: 100%; overflow: hidden; touch-action: none; font-family: sans-serif; position: fixed; }
+        
+        /* Головний екран */
         .header { margin-top: 30px; text-align: center; width: 100%; pointer-events: none; }
         #balance { font-size: 55px; font-weight: 900; color: #fff; margin: 0; }
         .tap-info { color: #888; font-size: 14px; margin-top: 5px; }
@@ -23,20 +25,45 @@
         .bar { width: 100%; height: 12px; background: #222; border-radius: 10px; overflow: hidden; margin-top: 5px; }
         #fill { height: 100%; width: 100%; background: #f3ba2f; transition: width 0.2s; }
 
-        .menu { position: fixed; bottom: 0; width: 100%; display: flex; background: #111; border-top: 1px solid #333; padding: 15px 0 30px 0; z-index: 100; pointer-events: auto; }
-        .menu-btn { flex: 1; background: none; border: none; color: #888; font-weight: bold; font-size: 14px; pointer-events: auto; }
+        /* Меню */
+        .menu { position: fixed; bottom: 0; width: 100%; display: flex; background: #111; border-top: 1px solid #333; padding: 15px 0 30px 0; z-index: 100; }
+        .menu-btn { flex: 1; background: none; border: none; color: #888; font-weight: bold; font-size: 14px; }
         .menu-btn.active { color: #f3ba2f; }
 
-        .tab-content { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 80; padding: 40px 25px; box-sizing: border-box; overflow-y: auto; pointer-events: auto; }
-        .upgrade-card { background: #111; padding: 15px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border: 1px solid #222; pointer-events: auto; }
-        .upgrade-card button { background: #f3ba2f; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 900; pointer-events: auto; }
+        /* ВКЛАДКА ДРУЗІ (ТА САМА ЖОВТА ШТУКА) */
+        .tab-content { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 80; padding: 40px 25px; box-sizing: border-box; overflow-y: auto; }
+        
+        .refs-title { font-size: 32px; font-weight: 900; color: #fff; text-align: center; margin-bottom: 10px; }
+        .refs-bonus-card { 
+            background: #f3ba2f; color: #000; padding: 20px; border-radius: 20px; 
+            text-align: center; font-weight: 900; font-size: 20px; margin-bottom: 25px;
+            box-shadow: 0 10px 20px rgba(243, 186, 47, 0.3);
+        }
+        .refs-bonus-card span { display: block; font-size: 14px; text-transform: uppercase; opacity: 0.8; }
+
+        .link-container { background: #1a1a1a; padding: 15px; border-radius: 15px; border: 1px dashed #f3ba2f; margin-bottom: 20px; position: relative; }
+        .link-label { color: #888; font-size: 12px; margin-bottom: 5px; display: block; }
+        #ref-link-display { color: #fff; font-family: monospace; font-size: 13px; word-break: break-all; }
+
+        .btn-invite { 
+            width: 100%; background: #f3ba2f; color: #000; border: none; padding: 20px; 
+            border-radius: 18px; font-weight: 900; font-size: 18px; cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .btn-invite:active { transform: scale(0.98); }
+
+        .friends-list-header { color: #fff; font-weight: bold; margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        .empty-list { color: #444; text-align: center; font-style: italic; margin-top: 20px; }
+
+        /* Магазин */
+        .upgrade-card { background: #111; padding: 15px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border: 1px solid #222; }
+        .upgrade-card button { background: #f3ba2f; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 900; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1 id="balance">0</h1>
-        <div class="tap-info">Прибуток: +<span id="power-val">1</span> | AFK: +<span id="afk-val">0</span>/с</div>
+        <h1 id="balance">0</h1><div class="tap-info">Прибуток: +<span id="power-val">1</span> | AFK: +<span id="afk-val">0</span>/с</div>
     </div>
 
     <div class="coin-wrap">
@@ -55,20 +82,37 @@
     </div>
 
     <div id="shop" class="tab-content">
-        <h2>Магазин</h2>
+        <h2 style="color:#fff;">Магазин</h2>
         <div class="upgrade-card">
-            <div><b>Tap Lvl <span id="tap-lvl">1</span></b><br><small>Ціна: <span id="tap-cost">100</span></small></div>
+            <div><b>Multi-Tap Lvl <span id="tap-lvl">1</span></b><br><small>Ціна: <span id="tap-cost">100</span></small></div>
             <button onclick="buy('tap')">UP</button>
         </div>
         <div class="upgrade-card">
-            <div><b>AFK Lvl <span id="afk-lvl">0</span></b><br><small>Ціна: <span id="afk-cost">500</span></small></div>
+            <div><b>AFK Ферма Lvl <span id="afk-lvl">0</span></b><br><small>Ціна: <span id="afk-cost">500</span></small></div>
             <button onclick="buy('afk')">UP</button>
         </div>
-        <button onclick="showTab('game')" style="width:100%; background:none; border:1px solid #333; color:#fff; padding:15px; border-radius:15px; margin-top:20px;">Повернутись до гри</button>
-    </div><div id="refs" class="tab-content">
-        <h2>Друзі</h2>
-        <p style="color:#888;">Запрошуйте друзів!</p>
-        <button onclick="showTab('game')" style="width:100%; background:none; border:1px solid #333; color:#fff; padding:15px; border-radius:15px;">Повернутись до гри</button>
+        <button onclick="showTab('game')" style="width:100%; background:none; border:1px solid #333; color:#fff; padding:15px; border-radius:15px; margin-top:20px;">Назад до панди</button>
+    </div>
+
+    <div id="refs" class="tab-content">
+        <div class="refs-title">Друзі</div>
+        
+        <div class="refs-bonus-card">
+            <span>Бонус за друга</span>
+            +20,000 МОНЕТ
+        </div>
+
+        <div class="link-container">
+            <span class="link-label">Твоє унікальне посилання:</span>
+            <div id="ref-link-display">Завантаження...</div>
+        </div>
+
+        <button class="btn-invite" onclick="inviteFriend()">ЗАПРОСИТИ ДРУГА 🚀</button>
+
+        <div class="friends-list-header">Твої друзі:</div>
+        <div class="empty-list">Поки що нікого немає... Будь першим, хто запросить!</div>
+        
+        <button onclick="showTab('game')" style="width:100%; background:none; border:1px solid #333; color:#fff; padding:15px; border-radius:15px; margin-top:40px;">Назад до гри</button>
     </div>
 
     <script>
@@ -84,12 +128,19 @@
         let aCost = Number(localStorage.getItem('aCost')) || 500;
         let energy = 1000;
 
+        // Генеруємо посилання на основі ID користувача Telegram
+        const userId = tg.initDataUnsafe.user?.id || "player";
+        const botName = "Cliker_teken_bot"; // ЗАМІНИ НА ІМ'Я СВОГО БОТА (наприклад PandaCoinBot)
+        const refLink = https://t.me/${botName}?start=${userId};
+        document.getElementById('ref-link-display').innerText = refLink;
+
         function updateUI() {
             document.getElementById('balance').innerText = Math.floor(coins).toLocaleString();
             document.getElementById('power-val').innerText = power;
             document.getElementById('afk-val').innerText = afk;
             document.getElementById('energy-val').innerText = Math.floor(energy);
             document.getElementById('fill').style.width = (energy / 10) + '%';
+            
             document.getElementById('tap-lvl').innerText = power;
             document.getElementById('tap-cost').innerText = Math.floor(tCost);
             document.getElementById('afk-lvl').innerText = afk;
@@ -105,7 +156,6 @@
         function handleTap(e) {
             e.preventDefault();
             e.stopPropagation();
-            
             if (energy >= power) {
                 coins += power;
                 energy -= power;
@@ -122,7 +172,7 @@
             } else if (type === 'afk' && coins >= aCost) {
                 coins -= aCost; afk++; aCost *= 1.5;
             } else {
-                tg.showAlert('Мало монет! 🐼'); return;
+                tg.showAlert('Тобі треба більше золота! 🐼'); return;
             }
             updateUI();
         }
@@ -132,6 +182,12 @@
             document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
             if (name !== 'game') document.getElementById(name).style.display = 'block';
             document.getElementById('btn-' + name).classList.add('active');
+        }
+
+        function inviteFriend() {
+            const shareText = "Грай зі мною в Panda Coin! 🐼 Отримуй 20,000 монет за реєстрацію!";
+            const fullUrl = https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent(shareText)};
+            tg.openTelegramLink(fullUrl);
         }
 
         const coinBtn = document.getElementById('coin');
