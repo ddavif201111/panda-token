@@ -3,51 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <link rel="stylesheet" href="style.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { 
+            background: #000; color: #f3ba2f; margin: 0; 
+            display: flex; flex-direction: column; align-items: center;
+            height: 100vh; width: 100%; overflow: hidden; 
+            touch-action: none; font-family: sans-serif;
+        }
+
+        /* Шапка з балансом */
+        .header {
+            margin-top: 30px;
+            text-align: center;
+            width: 100%;
+        }
+        #balance { font-size: 55px; font-weight: 900; color: #fff; margin: 0; }
+        .tap-info { color: #888; font-size: 16px; margin-top: 5px; }
+
+        /* Контейнер для панди (центрує її вертикально) */
+        .coin-wrap {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        #coin { 
+            width: 240px; height: 240px; border-radius: 50%; border: 6px solid #f3ba2f;
+            display: flex; align-items: center; justify-content: center; font-size: 100px;
+            background: radial-gradient(circle, #333, #000);
+            transition: transform 0.05s; user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Енергія */
+        .stats { width: 85%; margin-bottom: 100px; }
+        .energy-text { font-size: 18px; font-weight: bold; margin-bottom: 8px; text-align: left; }
+        .bar { width: 100%; height: 14px; background: #222; border-radius: 10px; overflow: hidden; }
+        #fill { height: 100%; width: 100%; background: #f3ba2f; transition: width 0.2s; }
+
+        /* Нижнє меню */
+        .menu { 
+            position: fixed; bottom: 0; width: 100%; display: flex; 
+            background: #111; border-top: 1px solid #333; padding: 15px 0;
+            padding-bottom: 25px; /* Відступ для нових iPhone */
+        }
+        .menu-btn { 
+            flex: 1; background: none; border: none; color: #888; 
+            font-weight: bold; font-size: 16px; display: flex; flex-direction: column; align-items: center;
+        }
+        .menu-btn.active { color: #f3ba2f; }
+
+        /* Вкладки */
+        .tab-content { 
+            display: none; position: absolute; top: 0; left: 0; 
+            width: 100%; height: 100%; background: #000; z-index: 10;
+            padding: 20px; box-sizing: border-box;
+        }
+    </style>
 </head>
 <body>
-    <div id="app">
-        <div class="header">
-            <h1 id="balance">0</h1>
-            <div class="per-tap">Прибуток за тап: <span id="tap-val">1</span></div>
-        </div>
 
-        <div id="coin">🐼</div>
-
-        <div class="stats">
-            <div class="energy-info">⚡ <span id="energy-val">1000</span> / 1000</div>
-            <div class="bar"><div id="fill"></div></div>
-        </div>
-
-        <div class="menu">
-            <button class="menu-btn active" onclick="showTab('game')">🎮 Гра</button>
-            <button class="menu-btn" onclick="showTab('shop')">🚀 Магазин</button>
-            <button class="menu-btn" onclick="showTab('refs')">👥 Друзі</button>
-        </div>
-
-        <div id="shop" class="tab-content">
-            <h2>Магазин</h2>
-            <div class="upgrade-card">
-                <div>
-                    <b>Multi-Tap</b><br>
-                    <small>Ціна: <span id="upgrade-cost">100</span></small>
-                </div>
-                <button onclick="buyUpgrade()">Купити</button>
-            </div>
-        </div>
-
-        <div id="refs" class="tab-content">
-            <h2>Ваші друзі</h2>
-            <p>Запрошуйте друзів та отримуйте бонуси!</p>
-            <div class="ref-link-box">
-                <input type="text" id="ref-link" value="https://t.me/your_bot?start=123" readonly>
-                <button onclick="copyRef()">Копіювати</button>
-            </div>
-            <div class="ref-list">Запрошено: <span id="ref-count">0</span></div>
-        </div>
+    <div class="header">
+        <h1 id="balance">0</h1>
+        <div class="tap-info">Прибуток за тап: <span id="power-val">1</span></div>
     </div>
 
-    <script src="script.js"></script>
+    <div class="coin-wrap">
+        <div id="coin">🐼</div>
+    </div>
+
+    <div class="stats">
+        <div class="energy-text">⚡ <span id="energy-val">1000</span> / 1000</div>
+        <div class="bar"><div id="fill"></div></div>
+    </div>
+
+    <div class="menu">
+        <button class="menu-btn active" onclick="showTab('game')">🎮 Гра</button>
+        <button class="menu-btn" onclick="showTab('shop')">🚀 Магазин</button>
+        <button class="menu-btn" onclick="showTab('refs')">👥 Друзі</button>
+    </div>
+
+    <div id="shop" class="tab-content">
+        <h2 style="margin-top:40px;">Магазин</h2>
+        <button onclick="buyUpgrade()" style="width:100%; padding:20px; background:#f3ba2f; border-radius:15px; font-weight:900; border:none;">
+            Lvl Up Tap (Ціна: <span id="cost-val">100</span>)
+        </button>
+        <button onclick="showTab('game')" style="margin-top:20px; background:none; border:1px solid #333; color:#fff; width:100%; padding:10px; border-radius:10px;">Назад</button>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        if(tg.disableVerticalSwipes) tg.disableVerticalSwipes();
+
+        let coins = Number(localStorage.getItem('coins')) || 0;
+        let power = Number(localStorage.getItem('power')) || 1;let cost = Number(localStorage.getItem('cost')) || 100;
+        let energy = 1000;
+
+        function updateUI() {
+            document.getElementById('balance').innerText = Math.floor(coins).toLocaleString();
+            document.getElementById('power-val').innerText = power;
+            document.getElementById('energy-val').innerText = Math.floor(energy);
+            document.getElementById('fill').style.width = (energy / 10) + '%';
+            document.getElementById('cost-val').innerText = Math.floor(cost);
+            
+            localStorage.setItem('coins', coins);
+            localStorage.setItem('power', power);
+            localStorage.setItem('cost', cost);
+        }
+
+        function handleTap(e) {
+            if (e.cancelable) e.preventDefault();
+            if (energy >= power) {
+                coins += power;
+                energy -= power;
+                const coin = document.getElementById('coin');
+                coin.style.transform = 'scale(0.95)';
+                setTimeout(() => coin.style.transform = 'scale(1)', 50);
+                if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+                updateUI();
+            }
+        }
+
+        function buyUpgrade() {
+            if (coins >= cost) {
+                coins -= cost;
+                power += 1;
+                cost *= 1.5;
+                updateUI();
+            } else {
+                tg.showAlert('Не вистачає монет!');
+            }
+        }
+
+        function showTab(name) {
+            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+            if (name !== 'game') {
+                document.getElementById(name).style.display = 'block';
+            }
+        }
+
+        const coinBtn = document.getElementById('coin');
+        coinBtn.addEventListener('touchstart', handleTap, {passive: false});
+        coinBtn.addEventListener('mousedown', handleTap);
+
+        setInterval(() => { if(energy < 1000) { energy += 1; updateUI(); } }, 1000);
+        updateUI();
+    </script>
 </body>
 </html>
