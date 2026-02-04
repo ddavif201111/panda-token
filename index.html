@@ -5,28 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { background: #000; color: #f3ba2f; margin: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; width: 100%; overflow: hidden; touch-action: none; font-family: sans-serif; }
-        .header { margin-top: 30px; text-align: center; width: 100%; }
+        body { background: #000; color: #f3ba2f; margin: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; width: 100%; overflow: hidden; touch-action: none; font-family: sans-serif; position: fixed; }
+        .header { margin-top: 30px; text-align: center; width: 100%; pointer-events: none; }
         #balance { font-size: 55px; font-weight: 900; color: #fff; margin: 0; }
         .tap-info { color: #888; font-size: 14px; margin-top: 5px; }
 
-        .coin-wrap { flex-grow: 1; display: flex; align-items: center; justify-content: center; width: 100%; }
-        #coin { width: 240px; height: 240px; border-radius: 50%; border: 6px solid #f3ba2f; display: flex; align-items: center; justify-content: center; font-size: 100px; background: radial-gradient(circle, #333, #000); transition: transform 0.05s; user-select: none; -webkit-tap-highlight-color: transparent; }
+        .coin-wrap { flex-grow: 1; display: flex; align-items: center; justify-content: center; width: 100%; pointer-events: none; }
+        #coin { 
+            width: 240px; height: 240px; border-radius: 50%; border: 6px solid #f3ba2f; 
+            display: flex; align-items: center; justify-content: center; font-size: 100px; 
+            background: radial-gradient(circle, #333, #000); transition: transform 0.05s; 
+            user-select: none; -webkit-tap-highlight-color: transparent;
+            pointer-events: auto; z-index: 10; touch-action: manipulation;
+        }
 
-        .stats { width: 85%; margin-bottom: 100px; }
-        .energy-text { font-size: 16px; font-weight: bold; margin-bottom: 8px; text-align: left; }
-        .bar { width: 100%; height: 12px; background: #222; border-radius: 10px; overflow: hidden; }
+        .stats { width: 85%; margin-bottom: 110px; pointer-events: none; }
+        .bar { width: 100%; height: 12px; background: #222; border-radius: 10px; overflow: hidden; margin-top: 5px; }
         #fill { height: 100%; width: 100%; background: #f3ba2f; transition: width 0.2s; }
 
-        .menu { position: fixed; bottom: 0; width: 100%; display: flex; background: #111; border-top: 1px solid #333; padding: 15px 0; padding-bottom: 25px; z-index: 100; }
-        .menu-btn { flex: 1; background: none; border: none; color: #888; font-weight: bold; font-size: 14px; cursor: pointer; }
+        .menu { position: fixed; bottom: 0; width: 100%; display: flex; background: #111; border-top: 1px solid #333; padding: 15px 0 30px 0; z-index: 100; pointer-events: auto; }
+        .menu-btn { flex: 1; background: none; border: none; color: #888; font-weight: bold; font-size: 14px; pointer-events: auto; }
         .menu-btn.active { color: #f3ba2f; }
 
-        .tab-content { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 50; padding: 25px; box-sizing: border-box; overflow-y: auto; }
-        .upgrade-card { background: #111; padding: 15px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border: 1px solid #222; }
-        .upgrade-card button { background: #f3ba2f; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 900; }
-        
-        .share-btn { width: 100%; background: #f3ba2f; color: #000; border: none; padding: 18px; border-radius: 15px; font-weight: 900; font-size: 18px; margin-top: 20px; }
+        .tab-content { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 80; padding: 40px 25px; box-sizing: border-box; overflow-y: auto; pointer-events: auto; }
+        .upgrade-card { background: #111; padding: 15px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border: 1px solid #222; pointer-events: auto; }
+        .upgrade-card button { background: #f3ba2f; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 900; pointer-events: auto; }
     </style>
 </head>
 <body>
@@ -41,7 +44,7 @@
     </div>
 
     <div class="stats">
-        <div class="energy-text">⚡ <span id="energy-val">1000</span> / 1000</div>
+        <div style="font-size:14px;">⚡ <span id="energy-val">1000</span> / 1000</div>
         <div class="bar"><div id="fill"></div></div>
     </div>
 
@@ -52,28 +55,25 @@
     </div>
 
     <div id="shop" class="tab-content">
-        <h2 style="margin-top:40px;">Магазин (Ціна x1.5)</h2>
+        <h2>Магазин</h2>
         <div class="upgrade-card">
-            <div><b>Multi-Tap (Lvl <span id="tap-lvl">1</span>)</b><br><small>Ціна: <span id="tap-cost">100</span></small></div>
+            <div><b>Tap Lvl <span id="tap-lvl">1</span></b><br><small>Ціна: <span id="tap-cost">100</span></small></div>
             <button onclick="buy('tap')">UP</button>
         </div>
         <div class="upgrade-card">
-            <div><b>AFK Ферма (Lvl <span id="afk-lvl">0</span>)</b><br><small>Ціна: <span id="afk-cost">500</span></small></div>
+            <div><b>AFK Lvl <span id="afk-lvl">0</span></b><br><small>Ціна: <span id="afk-cost">500</span></small></div>
             <button onclick="buy('afk')">UP</button>
         </div>
-    </div>
-
-    <div id="refs" class="tab-content">
-        <h2 style="margin-top:40px;">Запроси друзів</h2>
-        <p style="color:#888;">Отримуй +5000 монет за кожного друга!</p><div style="background:#111; padding:20px; border-radius:15px; border:1px solid #222; margin-top:20px;">
-            <span style="color:#888; font-size:12px;">Твоє посилання:</span><br>
-            <code id="ref-link" style="font-size:10px;">t.me/your_bot?start=user</code>
-        </div>
-        <button class="share-btn" onclick="share()">Запросити друга 🚀</button>
+        <button onclick="showTab('game')" style="width:100%; background:none; border:1px solid #333; color:#fff; padding:15px; border-radius:15px; margin-top:20px;">Повернутись до гри</button>
+    </div><div id="refs" class="tab-content">
+        <h2>Друзі</h2>
+        <p style="color:#888;">Запрошуйте друзів!</p>
+        <button onclick="showTab('game')" style="width:100%; background:none; border:1px solid #333; color:#fff; padding:15px; border-radius:15px;">Повернутись до гри</button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
+        tg.ready();
         tg.expand();
         if(tg.disableVerticalSwipes) tg.disableVerticalSwipes();
 
@@ -90,7 +90,6 @@
             document.getElementById('afk-val').innerText = afk;
             document.getElementById('energy-val').innerText = Math.floor(energy);
             document.getElementById('fill').style.width = (energy / 10) + '%';
-            
             document.getElementById('tap-lvl').innerText = power;
             document.getElementById('tap-cost').innerText = Math.floor(tCost);
             document.getElementById('afk-lvl').innerText = afk;
@@ -104,11 +103,13 @@
         }
 
         function handleTap(e) {
-            if (e.cancelable) e.preventDefault();
+            e.preventDefault();
+            e.stopPropagation();
+            
             if (energy >= power) {
                 coins += power;
                 energy -= power;
-                document.getElementById('coin').style.transform = 'scale(0.95)';
+                document.getElementById('coin').style.transform = 'scale(0.92)';
                 setTimeout(() => document.getElementById('coin').style.transform = 'scale(1)', 50);
                 if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
                 updateUI();
@@ -133,17 +134,16 @@
             document.getElementById('btn-' + name).classList.add('active');
         }
 
-        function share() {
-            const url = https://t.me/share/url?url=https://t.me/YOUR_BOT_NAME&text=Грай зі мною!;
-            tg.openTelegramLink(url);
-        }
+        const coinBtn = document.getElementById('coin');
+        coinBtn.addEventListener('touchstart', handleTap, {passive: false});
+        coinBtn.addEventListener('mousedown', handleTap);
 
-        document.getElementById('coin').addEventListener('touchstart', handleTap, {passive: false});
         setInterval(() => { 
             coins += afk; 
             if(energy < 1000) energy += 1.5; 
             updateUI(); 
         }, 1000);
+
         updateUI();
     </script>
 </body>
